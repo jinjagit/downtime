@@ -1,11 +1,10 @@
-//use std::fs::File;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
 use std::process::Command;
 use std::{thread, time::Duration};
 use chrono::prelude::*;
 use std::time::{SystemTime, UNIX_EPOCH};
-//use chrono::offset::LocalResult;
+use colored::*;
 
 //use std::process;
 
@@ -20,10 +19,10 @@ pub struct PingEvent {
 impl Default for PingEvent {
     fn default() -> PingEvent {
         PingEvent {
-            url: String::from("unintialized"),
-            status: String::from("unintialized"),
-            stdout: String::from("unintialized"),
-            stderr: String::from("unintialized"),
+            url: String::from("uninitialized"),
+            status: String::from("uninitialized"),
+            stdout: String::from("uninitialized"),
+            stderr: String::from("uninitialized"),
             ok: true,
         }
     }
@@ -56,6 +55,13 @@ impl PingEvent {
 
         self.ok
     }
+
+    fn log_details(&mut self) {
+        write_line(&format!("  url: {}", self.url));
+        write_line(&format!("  status: {}", self.status));
+        write_line(&format!("  stdout: {}", self.stdout));
+        write_line(&format!("  stderr: {}", self.stderr));
+    }
 }
 
 fn main() {
@@ -63,20 +69,15 @@ fn main() {
         url: String::from("google.com"),
         ..Default::default()
     };
-    //let mut router: PingEvent = PingEvent {url: String::from("192.168.1.1"), ..Default::default()};
+    let mut router: PingEvent = PingEvent {url: String::from("192.168.1.1"), ..Default::default()};
+
+    // let urls = (url1, router);
 
     write_line(&format!("START: {}", time_now()));
 
-    println!("date / time: {:?}", time_now());
+    //url1.ping();
 
-    let test: bool = url1.ping();
-
-    // println!("url: {}", url1.url);
-    // println!("status: {}", url1.status);
-    // println!("stdout: {}", url1.stdout);
-    // println!("stderr: {}", url1.stderr);
-    // println!("ok: {}", url1.ok);
-    println!("test: {}", test);
+    //url1.log_details();
 
     // ctrlc::set_handler(move || {
     //     println!();
@@ -86,7 +87,22 @@ fn main() {
     // .expect("Error setting Ctrl-C handler");
 
     loop {
-        println!("running...");
+        let url1_ok: bool = url1.ping();
+        let router_ok: bool = router.ping();
+
+        if url1_ok == false {
+            //url1.log_details();
+            println!("{}", "DOWN".bright_red());
+        } else {
+            println!("{}", "UP".bright_green());
+        }
+
+        if router_ok == false {
+            //url1.log_details();
+            println!("{}", "ROUTER DOWN".bright_red());
+        } else {
+            println!("{}", "ROUTER UP".bright_green());
+        }
 
         thread::sleep(Duration::from_secs(1));
     }
