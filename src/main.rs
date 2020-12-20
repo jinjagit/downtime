@@ -53,7 +53,7 @@ impl PingEvent {
 }
 
 fn main() {
-    let mut url1: PingEvent = PingEvent {url: String::from("google.com"), ..Default::default()};
+    let mut url1: PingEvent = PingEvent {url: String::from("googlefff.com"), ..Default::default()};
     //let mut router: PingEvent = PingEvent {url: String::from("192.168.1.1"), ..Default::default()};
 
     let test:bool = url1.ping();
@@ -80,3 +80,25 @@ fn main() {
 }
 
 // router IP: 192.168.1.1
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    // NOTE: This test will fail if router connection down/off/fails.
+    fn ping_test() {
+        let mut router: PingEvent = PingEvent {url: String::from("192.168.1.1"), ..Default::default()};
+        let test:bool = router.ping();
+
+        assert_eq!(test, true);
+        assert_eq!(router.ok, true);
+
+        let mut url1: PingEvent = PingEvent {url: String::from("not_a_valid_url.com"), ..Default::default()};
+        let test:bool = url1.ping();
+
+        assert_eq!(test, false);
+        assert_eq!(url1.ok, false);
+        assert_eq!(url1.status, "2");
+        assert_eq!(url1.stderr, "ping: not_a_valid_url.com: Name or service not known\n");
+    }
+}
