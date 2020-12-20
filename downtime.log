@@ -1,26 +1,27 @@
-START: Sun, 20 Dec 2020 22:13:51 +0000 system time: 1608502431
-  url: google.com
-  status: uninitialized
-  stdout: uninitialized
-  stderr: uninitialized
-START: Sun, 20 Dec 2020 22:13:58 +0000 system time: 1608502438
-  url: google.com
-  status: uninitialized
-  stdout: uninitialized
-  stderr: uninitialized
-START: Sun, 20 Dec 2020 22:14:02 +0000 system time: 1608502442
-  url: google.com
-  status: uninitialized
-  stdout: uninitialized
-  stderr: uninitialized
-START: Sun, 20 Dec 2020 22:26:40 +0000 system time: 1608503200
-  url: googlefff.com
-  status: 2
-  stdout: 
-  stderr: ping: googlefff.com: Name or service not known
 
-START: Sun, 20 Dec 2020 22:36:47 +0000 system time: 1608503807
-START: Sun, 20 Dec 2020 22:45:38 +0000 system time: 1608504338
-START: Sun, 20 Dec 2020 22:48:25 +0000 system time: 1608504505
-START: Sun, 20 Dec 2020 22:48:47 +0000 system time: 1608504527
-START: Sun, 20 Dec 2020 22:54:10 +0000 system time: 1608504850
+START: Sun, 20 Dec 2020 23:40:57 +0000 system time: 1608507657
+Router UP: Sun, 20 Dec 2020 23:40:57 +0000 system time: 1608507657
+CONNECTION UP: Sun, 20 Dec 2020 23:40:58 +0000 system time: 1608507658
+Router DOWN: Sun, 20 Dec 2020 23:42:03 +0000 system time: 1608507723
+  url: 192.168.1.1
+  status: 1
+  stdout: PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
+
+--- 192.168.1.1 ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+
+  stderr: 
+CONNECTION DOWN: Sun, 20 Dec 2020 23:42:13 +0000 system time: 1608507733
+  url: google.com
+  status: 1
+  stdout: PING google.com (216.58.204.14) 56(84) bytes of data.
+
+--- google.com ping statistics ---
+1 packets transmitted, 0 received, 100% packet loss, time 0ms
+
+
+  stderr: 
+Router UP: Sun, 20 Dec 2020 23:43:16 +0000 system time: 1608507796
+CONNECTION UP: Sun, 20 Dec 2020 23:43:54 +0000 system time: 1608507834
+END: Sun, 20 Dec 2020 23:56:06 +0000 system time: 1608508566

@@ -1,12 +1,11 @@
+use chrono::prelude::*;
+use colored::*;
 use std::fs::OpenOptions;
 use std::io::prelude::*;
+use std::process;
 use std::process::Command;
-use std::{thread, time::Duration};
-use chrono::prelude::*;
 use std::time::{SystemTime, UNIX_EPOCH};
-use colored::*;
-
-//use std::process;
+use std::{thread, time::Duration};
 
 pub struct PingEvent {
     url: String,
@@ -69,44 +68,55 @@ fn main() {
         url: String::from("google.com"),
         ..Default::default()
     };
-    let mut router: PingEvent = PingEvent {url: String::from("192.168.1.1"), ..Default::default()};
 
-    // let urls = (url1, router);
+    let mut router: PingEvent = PingEvent {
+        url: String::from("192.168.1.1"),
+        ..Default::default()
+    };
 
-    write_line(&format!("START: {}", time_now()));
+    let mut connection = false;
+    let mut router_up = false;
 
-    //url1.ping();
+    write_line(&format!("\nSTART: {}", time_now()));
 
     //url1.log_details();
 
-    // ctrlc::set_handler(move || {
-    //     println!();
-    //     println!("received Ctrl+C! (write end-time to log)");
-    //     process::exit(1);
-    // })
-    // .expect("Error setting Ctrl-C handler");
+    ctrlc::set_handler(move || {
+        println!("\nEXIT: {}", time_now());
+        write_line(&format!("END: {}", time_now()));
+        process::exit(1);
+    })
+    .expect("Error setting Ctrl-C handler");
 
     loop {
-        let url1_ok: bool = url1.ping();
         let router_ok: bool = router.ping();
 
-        if url1_ok == false {
-            //url1.log_details();
-            println!("{}", "DOWN".bright_red());
-        } else {
-            println!("{}", "UP".bright_green());
+        if router_up == true && router_ok == false {
+            println!("{} {}", "Router DOWN    ".bright_red(), time_now());
+            write_line(&format!("Router DOWN: {}", time_now()));
+            router.log_details();
+            router_up = false;
+        } else if router_up == false && router_ok == true {
+            println!("{} {}", "Router UP      ".bright_green(), time_now());
+            write_line(&format!("Router UP: {}", time_now()));
+            router_up = true;
         }
 
-        if router_ok == false {
-            //url1.log_details();
-            println!("{}", "ROUTER DOWN".bright_red());
-        } else {
-            println!("{}", "ROUTER UP".bright_green());
+        let url1_ok: bool = url1.ping();
+
+        if connection == true && url1_ok == false {
+            println!("{} {}", "CONNECTION DOWN".bright_red(), time_now());
+            write_line(&format!("CONNECTION DOWN: {}", time_now()));
+            url1.log_details();
+            connection = false;
+        } else if connection == false && url1_ok == true {
+            println!("{} {}", "CONNECTION UP  ".bright_green(), time_now());
+            write_line(&format!("CONNECTION UP: {}", time_now()));
+            connection = true;
         }
 
         thread::sleep(Duration::from_secs(1));
     }
-
 }
 
 fn time_now() -> String {
