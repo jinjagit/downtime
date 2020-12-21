@@ -169,7 +169,7 @@ fn write_line(input: &str) {
 fn write_lines(input: &str) {
     let split: Vec<&str> = input.split("\n").collect();
 
-    write_line(&format!("  {}", split[0]));
+    write_line(&format!("{}", split[0]));
 
     for i in 1..split.iter().count() {
         if split[i] != "" {
