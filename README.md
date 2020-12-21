@@ -1,16 +1,6 @@
 # downtime
-WIP: Use simple pings to record internet downtime
+Use simple pings to record internet downtime.
 
-# plan:
-```
-Record app start time/date
-Ping a website regularly (? every 10 seconds)
-  if website down: ping router
-    if router up: ping 3 more websites
-      if all websites down:
-        if was "up": record time/date & details in logfile & "down"
-repeat pinging loop
-  if any website ping successful: record time/date and "up"
+Designed to run continuously, probably on a Raspberry PI. Logs connection up / down events to a log file.
 
-If ctrl-C: record end-time
-```
+TODO: Write program to parse events from log file and produce a summary statistical report. This will enable production of reports without stopping this monitoring program.
