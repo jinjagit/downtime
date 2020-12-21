@@ -58,14 +58,24 @@ impl PingEvent {
     fn log_details(&mut self) {
         write_line(&format!("  url: {}", self.url));
         write_line(&format!("  status: {}", self.status));
-        write_line(&format!("  stdout: {}", self.stdout));
+        write_lines(&format!("  stdout: {}", self.stdout));
         write_line(&format!("  stderr: {}", self.stderr));
     }
 }
 
 fn main() {
     let mut url1: PingEvent = PingEvent {
-        url: String::from("google.com"),
+        url: String::from("8.8.8.8"), // Google's public DNS.
+        ..Default::default()
+    };
+
+    let mut url2: PingEvent = PingEvent {
+        url: String::from("4.2.2.2"), // Level 3 communications public DNS.
+        ..Default::default()
+    };
+
+    let mut url3: PingEvent = PingEvent {
+        url: String::from("bbc.co.uk"),
         ..Default::default()
     };
 
@@ -76,10 +86,9 @@ fn main() {
 
     let mut connection = false;
     let mut router_up = false;
+    let mut started = false;
 
     write_line(&format!("\nSTART: {}", time_now()));
-
-    //url1.log_details();
 
     ctrlc::set_handler(move || {
         println!("\nEXIT: {}", time_now());
@@ -91,12 +100,12 @@ fn main() {
     loop {
         let router_ok: bool = router.ping();
 
-        if router_up == true && router_ok == false {
+        if (router_up == true || started == false) && router_ok == false {
             println!("{} {}", "Router DOWN    ".bright_red(), time_now());
             write_line(&format!("Router DOWN: {}", time_now()));
             router.log_details();
             router_up = false;
-        } else if router_up == false && router_ok == true {
+        } else if (router_up == false || started == false) && router_ok == true {
             println!("{} {}", "Router UP      ".bright_green(), time_now());
             write_line(&format!("Router UP: {}", time_now()));
             router_up = true;
@@ -104,18 +113,31 @@ fn main() {
 
         let url1_ok: bool = url1.ping();
 
-        if connection == true && url1_ok == false {
-            println!("{} {}", "CONNECTION DOWN".bright_red(), time_now());
-            write_line(&format!("CONNECTION DOWN: {}", time_now()));
-            url1.log_details();
-            connection = false;
-        } else if connection == false && url1_ok == true {
-            println!("{} {}", "CONNECTION UP  ".bright_green(), time_now());
-            write_line(&format!("CONNECTION UP: {}", time_now()));
-            connection = true;
+        if router_ok == true {
+            if (connection == true || started == false) && url1_ok == false {
+                let url2_ok: bool = url2.ping();
+                let url3_ok: bool = url3.ping();
+
+                if url2_ok == false && url3_ok == false {
+                    println!("{} {}", "CONNECTION DOWN".bright_red(), time_now());
+                    write_line(&format!("CONNECTION DOWN: {}", time_now()));
+                    url1.log_details();
+                    url2.log_details();
+                    url3.log_details();
+                    connection = false;
+                }
+            } else if (connection == false || started == false) && url1_ok == true {
+                println!("{} {}", "CONNECTION UP  ".bright_green(), time_now());
+                write_line(&format!("CONNECTION UP: {}", time_now()));
+                connection = true;
+            }
         }
 
-        thread::sleep(Duration::from_secs(1));
+        if started == false {
+            started = true
+        };
+
+        thread::sleep(Duration::from_secs(15));
     }
 }
 
@@ -140,6 +162,19 @@ fn write_line(input: &str) {
 
     if let Err(e) = writeln!(file, "{}", input) {
         println!("Couldn't write to file: {}", e);
+    }
+}
+
+// Used to remove blank lines and indent stdout result.
+fn write_lines(input: &str) {
+    let split: Vec<&str> = input.split("\n").collect();
+
+    write_line(&format!("  {}", split[0]));
+
+    for i in 1..split.iter().count() {
+        if split[i] != "" {
+            write_line(&format!("    {}", split[i]));
+        }
     }
 }
 
