@@ -1,5 +1,5 @@
 # downtime
-Use simple pings to record internet downtime.
+Use simple pings to detect and record internet downtime.
 
 Designed to run continuously, probably on a Raspberry PI. Logs connection up / down events to a log file.
 
