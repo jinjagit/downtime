@@ -157,7 +157,7 @@ fn write_line(input: &str) {
     let mut file = OpenOptions::new()
         .write(true)
         .append(true)
-        .open("downtime.log")
+        .open("/home/j/Documents/downtime.log")
         .unwrap();
 
     if let Err(e) = writeln!(file, "{}", input) {
